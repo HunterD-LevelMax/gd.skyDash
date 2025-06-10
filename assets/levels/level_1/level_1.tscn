@@ -59,6 +59,7 @@ script = ExtResource("1_13q1v")
 
 [node name="BackgroundPlayer" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("2_csraq")
+volume_db = -5.0
 
 [node name="UI" parent="." instance=ExtResource("2_wynxu")]
 

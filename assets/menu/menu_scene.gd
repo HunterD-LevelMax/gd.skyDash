@@ -4,11 +4,17 @@ extends Node3D
 @onready var exit_dialog = preload("res://assets/ui/exit_dialog.tscn")
 @onready var record_text = $Record_Label
 @onready var coins_text = $Coins_Label
+@onready var player = $Player
 
 var is_player_in_exit_area: bool = false  # Флаг нахождения игрока в зоне
 var dialog_instance: CanvasLayer = null  # Экземпляр диалога для управления
+var music_tracks: Array[String] = Global.music_tracks
+@onready var background_player = $BackgroundAudio
 
 func _ready() -> void:
+	background_player.finished.connect(play_random_music)
+	play_random_music()
+	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	print("Сцена старта загружена. Путь к уровню: ", level_scene_path)
 	
@@ -83,12 +89,19 @@ func _load_data() -> void:
 	var all_coins = Global.load_coins()
 	
 	if all_coins is int:
-		coins_text.text = "Мое сокровище! МОНЕТ:" + str(all_coins) + " 🟡"
+		coins_text.text = "Мое сокровище! МОНЕТ: " + str(all_coins) + " 🟡"
 	else:
 		record_text.text = "Надо собрать монеты"
 	print("всего монет вызван: ", all_coins)	
 	
-	
-	
-	
-	
+func _input(event: InputEvent) -> void:
+	if event.is_action_pressed("restart"):
+		player.position = $Spawn.position + Vector3(0, 1.0, 0)
+		player.show_floating_text("Упсс!", 2.0)
+		
+func play_random_music() -> void:
+	var random_track_path := music_tracks[randi() % music_tracks.size()]
+	var stream := load(random_track_path)
+	if stream is AudioStream:
+		background_player.stream = stream
+		background_player.play()

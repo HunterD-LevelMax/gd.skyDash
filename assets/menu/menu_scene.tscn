@@ -2508,6 +2508,7 @@ script = ExtResource("1_vg1oy")
 
 [node name="BackgroundAudio" type="AudioStreamPlayer" parent="."]
 stream = ExtResource("6_sujgt")
+volume_db = -5.0
 autoplay = true
 
 [node name="Player" parent="." instance=ExtResource("2_qb64h")]
@@ -2634,7 +2635,7 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -34.9055, 0)
 shape = SubResource("BoxShape3D_xpw0r")
 
 [node name="Spawn" type="Node3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05781, -10.6172)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 2.05781, -10.3723)
 
 [node name="JumpBonus" parent="." instance=ExtResource("8_g3fra")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 21.0867, 7.78124, 1.13567)
@@ -2669,7 +2670,7 @@ shape = SubResource("ConvexPolygonShape3D_qg5yv")
 shape = SubResource("ConvexPolygonShape3D_klmkh")
 
 [node name="coin_stack_small" type="MeshInstance3D" parent="Tresuare"]
-transform = Transform3D(-0.332688, 0, -0.943037, 0, 1, 0, 0.943037, 0, -0.332688, 13.2874, 0, 3.75382)
+transform = Transform3D(-0.332688, 0, -0.943037, 0, 1, 0, 0.943037, 0, -0.332688, 13.9623, 0, 3.69146)
 mesh = SubResource("ArrayMesh_au5dd")
 skeleton = NodePath("")
 
@@ -2679,7 +2680,7 @@ skeleton = NodePath("")
 shape = SubResource("ConvexPolygonShape3D_o3lrt")
 
 [node name="coin_stack_medium" type="MeshInstance3D" parent="Tresuare"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 13.8475, 0, 4.33552)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 14.4011, 0, 4.75296)
 mesh = SubResource("ArrayMesh_ehofc")
 skeleton = NodePath("")
 
@@ -2689,13 +2690,14 @@ skeleton = NodePath("")
 shape = SubResource("ConvexPolygonShape3D_pjmy2")
 
 [node name="coin_stack_large" type="MeshInstance3D" parent="Tresuare"]
-transform = Transform3D(-0.722581, 0, 0.691286, 0, 1, 0, -0.691286, 0, -0.722581, 11.2556, 0, 6.04858)
+transform = Transform3D(-0.997767, 0, -0.0667963, 0, 1, 0, 0.0667963, 0, -0.997767, 11.4251, 0, 6.63672)
 mesh = SubResource("ArrayMesh_lbmby")
 skeleton = NodePath("")
 
 [node name="StaticBody3D" type="StaticBody3D" parent="Tresuare/coin_stack_large"]
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Tresuare/coin_stack_large/StaticBody3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.276978, 0, -0.289517)
 shape = SubResource("ConvexPolygonShape3D_tvo8y")
 
 [node name="Decorations" type="Node3D" parent="."]

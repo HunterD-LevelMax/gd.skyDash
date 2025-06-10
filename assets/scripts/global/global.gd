@@ -7,8 +7,15 @@ var current_score: int = 0
 var best_score: int = 0
 var all_coins: int = 0
 
-const SCORE_SAVE_PATH = "user://save_data.dat"
-const COINS_SAVE_PATH = "user://coins_data.dat"
+var music_tracks: Array[String] = [
+	"res://assets/audio/Background/euphoric_drive.ogg",
+	"res://assets/audio/Background/pixel_dreams.ogg",
+	"res://assets/audio/Background/pixel_love.ogg",
+	"res://assets/audio/Background/retro_adventure.ogg",
+	"res://assets/audio/Background/trance_subuplifting.ogg"
+]
+
+const SAVE_PATH = "user://user_data.dat"
 
 # Функция для установки пути к скину
 func set_skin_path(new_path: String) -> void:
@@ -25,61 +32,50 @@ func set_layer(new_layer: int) -> void:
 	current_layer = new_layer
 
 func _ready():
-	load_best_score()
-	load_coins()
+	load_data()
 
-func save_best_score() -> void:
-	var file = FileAccess.open(SCORE_SAVE_PATH, FileAccess.WRITE)
+func save_data() -> void:
+	var file = FileAccess.open(SAVE_PATH, FileAccess.WRITE)
 	if file:
 		var save_data = {
-			"best_score": best_score
-		}
-		file.store_var(save_data)
-		file.close()
-		print("Рекорд сохранён: ", best_score)
-	else:
-		push_error("Не удалось открыть файл для сохранения рекорда: ", SCORE_SAVE_PATH)
-
-func load_best_score() -> int:
-	if FileAccess.file_exists(SCORE_SAVE_PATH):
-		var file = FileAccess.open(SCORE_SAVE_PATH, FileAccess.READ)
-		if file:
-			var save_data = file.get_var()
-			if save_data:
-				best_score = save_data.get("best_score", 0)
-				print("Рекорд загружен: ", best_score)
-			else:
-				push_error("Ошибка чтения данных рекорда из файла: ", SCORE_SAVE_PATH)
-			file.close()
-		else:
-			push_error("Не удалось открыть файл для чтения рекорда: ", SCORE_SAVE_PATH)
-	return best_score
-
-func save_coins() -> void:
-	var file = FileAccess.open(COINS_SAVE_PATH, FileAccess.WRITE)
-	if file:
-		var save_data = {
+			"best_score": best_score,
 			"all_coins": all_coins
 		}
 		file.store_var(save_data)
 		file.close()
-		print("Монеты сохранены: ", all_coins)
+		print("Данные сохранены: рекорд = ", best_score, ", монеты = ", all_coins)
 	else:
-		push_error("Не удалось открыть файл для сохранения монет: ", COINS_SAVE_PATH)
+		push_error("Не удалось открыть файл для сохранения: ", SAVE_PATH)
 
-func load_coins() -> int:
-	if FileAccess.file_exists(COINS_SAVE_PATH):
-		var file = FileAccess.open(COINS_SAVE_PATH, FileAccess.READ)
+func load_data() -> void:
+	if FileAccess.file_exists(SAVE_PATH):
+		var file = FileAccess.open(SAVE_PATH, FileAccess.READ)
 		if file:
 			var save_data = file.get_var()
 			if save_data:
+				best_score = save_data.get("best_score", 0)
 				all_coins = save_data.get("all_coins", 0)
-				print("Монеты загружены: ", all_coins)
+				print("Данные загружены: рекорд = ", best_score, ", монеты = ", all_coins)
 			else:
-				push_error("Ошибка чтения данных монет из файла: ", COINS_SAVE_PATH)
+				push_error("Ошибка чтения данных из файла: ", SAVE_PATH)
 			file.close()
 		else:
-			push_error("Не удалось открыть файл для чтения монет: ", COINS_SAVE_PATH)
+			push_error("Не удалось открыть файл для чтения: ", SAVE_PATH)
+
+func save_best_score() -> void:
+	save_data()
+	print("Рекорд обновлён: ", best_score)
+
+func load_best_score() -> int:
+	load_data()
+	return best_score
+
+func save_coins() -> void:
+	save_data()
+	print("Монеты обновлены: ", all_coins)
+
+func load_coins() -> int:
+	load_data()
 	return all_coins
 
 func check_new_record(score: int) -> bool:
@@ -95,9 +91,7 @@ func check_new_record(score: int) -> bool:
 # Сброс рекорда
 func reset_best_score() -> void:
 	best_score = 0
-	all_coins  = 0
 	save_best_score()
-	save_coins()
 	print("Рекорд сброшён до 0")
 
 # Добавление монет
@@ -106,7 +100,7 @@ func add_coins(coins: int) -> void:
 		push_warning("Попытка добавить отрицательное количество монет: ", coins)
 		return
 	all_coins += coins
-	save_coins()  # Сохраняем только монеты
+	save_coins()
 	print("Добавлено монет: ", coins, ", всего монет: ", all_coins)
 
 # Получение текущего количества монет

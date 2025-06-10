@@ -8,25 +8,20 @@ extends Node3D
 @onready var win_dialog = preload("res://assets/ui/win_dialog.tscn")
 @onready var menu_dialog = preload("res://assets/ui/menu_dialog.tscn")
 
+@export var menu_scene_path: String = "res://assets/menu/menu_scene.tscn"
+
 var layer_count = Global.get_current_layer()
 var menu_dialog_instance: CanvasLayer = null  # Экземпляр диалога меню
 var win_dialog_instance: CanvasLayer = null   # Экземпляр диалога победы
 
-var coin = 0
+var music_tracks: Array[String] = Global.music_tracks
 
-var music_tracks: Array[String] = [
-	"res://assets/audio/Background/euphoric_drive.ogg",
-	"res://assets/audio/Background/pixel_dreams.ogg",
-	"res://assets/audio/Background/pixel_love.ogg",
-	"res://assets/audio/Background/retro_adventure.ogg",
-	"res://assets/audio/Background/trance_subuplifting.ogg"
-]
+var coin = 0
 
 func _ready() -> void:
 	var max_layer = Global.load_best_score()
 	if max_layer != 0:
 		layer_count = max_layer
-		
 	randomize()
 	background_player.finished.connect(play_random_music)
 	play_random_music()
@@ -72,14 +67,22 @@ func _show_menu_dialog() -> void:
 	add_child(menu_dialog_instance)
 	menu_dialog_instance.open_dialog()
 	menu_dialog_instance.menu_confirmed.connect(_on_menu_confirmed)
+	menu_dialog_instance.restart_confirmed.connect(_restart_level)
 	menu_dialog_instance.exit_menu_cancelled.connect(_on_exit_cancelled)
 
 func _on_menu_confirmed():
 	if menu_dialog_instance:
-		menu_dialog_instance.queue_free()
+		var tween = create_tween()
+		tween.tween_property(menu_dialog_instance.get_node("Control"), "modulate:a", 0.0, 0.3)
+		tween.tween_callback(Callable(menu_dialog_instance, "call_deferred").bind("queue_free"))
 		menu_dialog_instance = null
-	get_tree().change_scene_to_file("res://assets/menu/menu_scene.tscn")
-
+	var tree = get_tree()
+	if tree:
+		tree.call_deferred("change_scene_to_file", menu_scene_path)
+	else:
+		push_error("Дерево сцены null в _on_menu_pressed")
+	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
 func _on_exit_cancelled():
 	if menu_dialog_instance:
 		menu_dialog_instance.queue_free()
@@ -126,12 +129,18 @@ func _on_next_level_pressed():
 
 func _on_menu_pressed():
 	if win_dialog_instance:
-		win_dialog_instance.queue_free()
+		var tween = create_tween()
+		tween.tween_property(win_dialog_instance.get_node("Control"), "modulate:a", 0.0, 0.3)
+		tween.tween_callback(Callable(win_dialog_instance, "call_deferred").bind("queue_free"))
 		win_dialog_instance = null
+	var tree = get_tree()
+	if tree:
+		tree.call_deferred("change_scene_to_file", "res://assets/menu/menu_scene.tscn")
+	else:
+		push_error("Дерево сцены null в _on_menu_pressed")
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
-	get_tree().change_scene_to_file("res://assets/menu/menu_scene.tscn")
 
-func _restart_level() -> void:
+func _restart_level():
 	if win_dialog_instance:
 		win_dialog_instance.queue_free()
 		win_dialog_instance = null
