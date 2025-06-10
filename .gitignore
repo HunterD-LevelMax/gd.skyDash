@@ -1,11 +1,19 @@
 # Godot 4+ specific ignores
 .godot/
-.nomedia
+
+# Keep project.godot
+!project.godot
+
+# Godot-android ignores
+.android/
 
 # Godot-specific ignores
 .import/
 export.cfg
 export_credentials.cfg
+
+# Godot-android ignores
+.android/
 
 # Imported translations (automatically generated from CSV files)
 *.translation
@@ -14,3 +22,32 @@ export_credentials.cfg
 .mono/
 data_*/
 mono_crash.*.json
+
+# Build and cache
+/build/
+/bin/
+/cache/
+/logs/
+
+# Exported files
+*.exe
+*.app
+*.apk
+*.zip
+
+# Temporary files
+*.tmp
+*.bak
+*.swp
+*.log
+
+# OS-specific
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# IDE-specific
+.vscode/
+.idea/
+*.code-workspace
+.vs/
