@@ -1,0 +1,66 @@
+[gd_scene load_steps=2 format=3 uid="uid://cjecvco7nd4tp"]
+
+[ext_resource type="Script" uid="uid://ck6p0j4o2crxq" path="res://assets/ui/exit_dialog.gd" id="1_qmujf"]
+
+[node name="CanvasLayer" type="CanvasLayer"]
+script = ExtResource("1_qmujf")
+
+[node name="Panel" type="Panel" parent="."]
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -299.0
+offset_top = -184.5
+offset_right = 299.0
+offset_bottom = 184.5
+grow_horizontal = 2
+grow_vertical = 2
+
+[node name="Title" type="Label" parent="Panel"]
+layout_mode = 1
+anchors_preset = -1
+anchor_left = 0.5
+anchor_top = 0.16
+anchor_right = 0.505
+anchor_bottom = 0.16
+offset_left = -102.0
+offset_top = -33.6
+offset_right = 104.13
+offset_bottom = 33.4
+grow_horizontal = 2
+theme_override_font_sizes/font_size = 35
+text = "Вы уверены, что хотите выйти?"
+
+[node name="VBoxContainer" type="VBoxContainer" parent="Panel"]
+layout_mode = 1
+anchors_preset = 8
+anchor_left = 0.5
+anchor_top = 0.5
+anchor_right = 0.5
+anchor_bottom = 0.5
+offset_left = -75.0
+offset_top = -55.0
+offset_right = 75.0
+offset_bottom = 55.0
+grow_horizontal = 2
+grow_vertical = 2
+theme_override_constants/separation = 30
+
+[node name="ButtonConfirm" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+focus_neighbor_top = NodePath(".")
+focus_neighbor_bottom = NodePath("../ButtonCancel")
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 30
+text = "ДА"
+
+[node name="ButtonCancel" type="Button" parent="Panel/VBoxContainer"]
+layout_mode = 2
+theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 40
+text = " ОТМЕНА "
+
+[connection signal="pressed" from="Panel/VBoxContainer/ButtonConfirm" to="." method="_on_confirm_pressed"]
+[connection signal="pressed" from="Panel/VBoxContainer/ButtonCancel" to="." method="_on_cancel_pressed"]

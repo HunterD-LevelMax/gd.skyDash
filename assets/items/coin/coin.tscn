@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://dt7c75kaggu0h"]
+
+[ext_resource type="Script" uid="uid://dq7us801geqdg" path="res://assets/items/coin/coin.gd" id="1_253vv"]
+[ext_resource type="AudioStream" uid="uid://bpx513wefj0ep" path="res://assets/audio/coin_up.mp3" id="2_btbq3"]
+[ext_resource type="PackedScene" uid="uid://hi4vu2iskkis" path="res://assets/models/KayKit_Prototype_Bits_1.0/Assets/gltf/Coin_A.gltf" id="3_qdk6j"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_ccmkd"]
+
+[node name="Coin" type="Node3D"]
+script = ExtResource("1_253vv")
+
+[node name="CoinAudio" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("2_btbq3")
+
+[node name="CoinArea" type="Area3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.616263, 0)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="CoinArea"]
+shape = SubResource("SphereShape3D_ccmkd")
+
+[node name="Coin_A2" parent="CoinArea" instance=ExtResource("3_qdk6j")]
+
+[connection signal="body_entered" from="CoinArea" to="." method="_on_coin_area_body_entered"]
