@@ -8,7 +8,7 @@ extends CharacterBody3D
 @export var rotation_speed: float = 10.0
 @export var sprint_stamina_max: float = 100.0
 @export var stamina_drain_rate: float = 25.0
-@export var stamina_regen_rate: float = 20.0
+@export var stamina_regen_rate: float = 15.0
 @export var sprint_jump_multiplier: float = 1.10
 @export var jump_buffer_time: float = 0.2  # Время буферизации ввода прыжка
 @export var coyote_time: float = 0.2  # Время койот-тайма для прыжка после покидания платформы
@@ -23,16 +23,14 @@ extends CharacterBody3D
 
 # Ноды
 @onready var camera: Camera3D = $SpringArmPivot/Camera
-
 @onready var skin = $Skin
-
-var animation_player
-
 @onready var text3d: Label3D = $TextLabel3D
 
 # Звук
 @onready var jump_audio: AudioStreamPlayer = $JumpAudio
 @onready var stamina_bar: ProgressBar = $"../UI/Control/StaminaContainer/StaminaBar"
+
+var animation_player
 
 # Состояния
 var _is_sprinting: bool = false
@@ -55,24 +53,15 @@ const AIR_DAMPING: float = 0.4  # Скорость затухания гориз
 @export var mesh: PackedScene =  preload("res://assets/characters/bear/player_bear.tscn")
 
 func _ready() -> void:
-	# Загружаем скин из Global
-	#var skin_path = Global.get_skin_path()
-	
-	#skin = load(skin_path).instantiate()
-	#add_child(skin)
-	#skin.position = Vector3.ZERO
-
 	# Находим AnimationPlayer внутри скина
 	animation_player = skin.get_node("AnimationPlayer")
 	if animation_player == null:
 		print("Ошибка: AnimationPlayer не найден в скине!")
-
 	# Подключаем сигнал завершения анимации
 	animation_player.animation_finished.connect(_on_animation_finished)
 	# Инициализация оригинальной высоты прыжка
 	_original_jump_velocity = jump_velocity
 
-	
 func _physics_process(delta: float) -> void:
 	# Обновление буфера прыжка
 	if Input.is_action_just_pressed("jump"):
@@ -177,7 +166,7 @@ func _get_camera_relative_direction(input_dir: Vector2) -> Vector3:
 func _handle_sprint(delta: float) -> void:
 	# Проверка возможности спринта
 	var can_sprint: bool = (
-		Input.is_action_pressed("sprint") and
+		#Input.is_action_pressed("sprint") and
 		is_on_floor() and
 		_sprint_stamina > 0 and
 		Input.get_vector("left", "right", "down", "up").length() > 0
@@ -247,7 +236,6 @@ func _end_jump_bonus() -> void:
 		jump_velocity = _original_jump_velocity
 		_is_jump_bonus_active = false
 		_jump_bonus_timer = null
-# Функция для смены скина персонажа
 
 # Функция для смены скина персонажа
 func change_skin(new_mesh_path: String) -> void:
@@ -291,3 +279,8 @@ func show_floating_text(text: String, duration: float = 2.0) -> void:
 	var tween = create_tween().set_parallel(true)
 	tween.tween_property(text3d, "position:y", text3d.position.y + 1.0, duration)
 	tween.tween_callback(func(): text3d.visible = false).set_delay(duration)
+
+func _on_touch_screen_button_pressed() -> void:
+	Input.action_press("jump")
+	await get_tree().create_timer(0.1).timeout
+	Input.action_release("jump")

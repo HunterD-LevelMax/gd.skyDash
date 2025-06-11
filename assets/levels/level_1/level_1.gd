@@ -31,7 +31,7 @@ func _ready() -> void:
 	platform_generator.initialize_plane(plane)
 	
 	await platform_generator.spawn_clustered_path({
-		"turns_count": 1,
+		"turns_count": layer_count,
 		"platforms_per_turn": 10,
 		"spiral_step": 1.01,
 		"cluster_radius": 16.0,
@@ -133,6 +133,7 @@ func _on_menu_pressed():
 		tween.tween_property(win_dialog_instance.get_node("Control"), "modulate:a", 0.0, 0.3)
 		tween.tween_callback(Callable(win_dialog_instance, "call_deferred").bind("queue_free"))
 		win_dialog_instance = null
+	platform_generator.clear_platforms()
 	var tree = get_tree()
 	if tree:
 		tree.call_deferred("change_scene_to_file", "res://assets/menu/menu_scene.tscn")
@@ -147,6 +148,7 @@ func _restart_level():
 	if menu_dialog_instance:
 		menu_dialog_instance.queue_free()
 		menu_dialog_instance = null
+	platform_generator.clear_platforms()
 	get_tree().call_deferred("reload_current_scene")
 
 func _on_area_3d_body_entered() -> void:

@@ -59,6 +59,8 @@ func spawn_clustered_path(params: Dictionary) -> void:
 		var radius_step: float = (spiral_step * difficulty) * (turn + 1) / turns_count
 		radius_step = min(radius_step, max_radius)
 		for i in range(platforms_per_turn):
+			if not is_inside_tree():  # Проверяем, находится ли узел в дереве сцены
+				return
 			var angle: float = (i * 2.0 * PI / platforms_per_turn) + (turn * 2.0 * PI / platforms_per_turn)
 			var pos_x: float = _plane_position.x + cos(angle) * radius_step
 			var pos_z: float = _plane_position.z + sin(angle) * radius_step
@@ -72,9 +74,8 @@ func spawn_clustered_path(params: Dictionary) -> void:
 			pos_x += cluster_offset_x
 			pos_z += cluster_offset_z
 			await _spawn_platform_with_animation(Vector3(pos_x, pos_y, pos_z), 0.1, 0.5)
-
 		current_height += vertical_step * difficulty
-			
+
 func spawn_win_platform(callback: Callable) -> void:
 	# Создание платформы победы
 	var win_platform: Node = _win_platform_scene.instantiate()
@@ -120,8 +121,11 @@ func _spawn_platform(position: Vector3) -> Node:
 	return platform_instance
 
 func _spawn_platform_with_animation(position: Vector3, delay: float, anim_duration: float) -> void:
-	# Создание платформы с задержкой и анимацией
+	if not is_inside_tree():  # Проверяем, находится ли узел в дереве сцены
+		return
 	await get_tree().create_timer(delay).timeout
+	if not is_inside_tree():  # Проверяем снова после задержки
+		return
 	var platform_instance: Node = _spawn_platform(position)
 	platform_instance.scale = Vector3.ZERO
 	var tween = create_tween()
@@ -154,3 +158,9 @@ func _on_coin_collected() -> void:
 func _on_jump_boost_collected() -> void:
 	# Заглушка для обработки бонуса прыжка
 	pass
+	
+func clear_platforms() -> void:
+	for platform in _active_platforms:
+		if is_instance_valid(platform):
+			platform.visible = false
+	_active_platforms.clear()

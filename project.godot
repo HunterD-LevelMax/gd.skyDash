@@ -22,7 +22,7 @@ DebugMenu="*res://addons/debug_menu/debug_menu.tscn"
 
 [editor_plugins]
 
-enabled=PackedStringArray("res://addons/debug_menu/plugin.cfg")
+enabled=PackedStringArray("res://addons/debug_menu/plugin.cfg", "res://addons/virtual_joystick/plugin.cfg")
 
 [input]
 
@@ -174,6 +174,11 @@ cancel_gamepad={
 "events": [Object(InputEventJoypadButton,"resource_local_to_scene":false,"resource_name":"","device":-1,"button_index":1,"pressure":0.0,"pressed":true,"script":null)
 ]
 }
+
+[input_devices]
+
+sensors/enable_accelerometer=true
+sensors/enable_gyroscope=true
 
 [rendering]
 
